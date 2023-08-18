@@ -14,7 +14,7 @@ RUN npm ci --only=production
 COPY . .
 
 # Build the app
-RUN npm run build
+# RUN npm run build
 
 # Expose port
 EXPOSE 3333
