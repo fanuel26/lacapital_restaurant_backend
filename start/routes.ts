@@ -24,9 +24,14 @@ Route.group(() => {
   //// authetication route
   Route.group(() => {
     Route.post('/login', 'AuthController.login')
-    Route.post('/register', 'AuthController.register')
   }).prefix('/auth')
 
+
+  Route.group(() => {
+    Route.get('/list', 'AuthController.list')
+    Route.post('/register', 'AuthController.register')
+    Route.get('/statistique', 'AuthController.stats')
+  }).prefix('/auth').middleware(['auth'])
 
   /// route pour les produit
   Route.group(() => {

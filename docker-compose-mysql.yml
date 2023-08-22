@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "5555:5555"
+      - "5555:3333"
     environment:
       # NODE_ENV: production
       DB_CONNECTION: mysql

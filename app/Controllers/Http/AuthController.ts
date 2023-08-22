@@ -1,11 +1,58 @@
-// import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Hash from '@ioc:Adonis/Core/Hash'
+import Cuisine from 'App/Models/Cuisine';
+import Depense from 'App/Models/Depense';
+import Menu from 'App/Models/Menu';
+import Production from 'App/Models/Production';
+import Produit from 'App/Models/Produit';
+import Reservation from 'App/Models/Reservation';
 import ResponseBody from 'App/Models/ResponseBody'
 import User from "App/Models/User"
 import UserRegistrationValidator from 'App/Validators/UserRegistrationValidator'
 
 export default class AuthController {
+  public async list({ response }) {
+    const user = await User.query().where('role', 1);
+
+    /// generation de response
+    const responseBody = new ResponseBody
+    responseBody.status = true
+    responseBody.data = user
+    responseBody.message = 'Liste des utilisateurs'
+    return response.accepted(responseBody)
+  }
+
+  public async stats({ response }) {
+    const caisse = await User.query().where('role', 1);
+    const commande = await Cuisine.all();
+    const total_commande = await Cuisine.query().sum('prix_total as prix_total').first();
+    const reservation = await Reservation.all();
+    const production = await Production.all();
+    const menu = await Menu.all();
+    const produit = await Produit.all();
+    const depense = await Depense.all();
+    const total_depense = await Depense.query().sum('somme as somme').first();
+
+    let data = {
+      'caisse': caisse.length,
+      'commande': commande.length,
+      'reservation': reservation.length,
+      'production': production.length,
+      'menu': menu.length,
+      'produit': produit.length,
+      'depense': depense.length,
+      'total_commande': total_commande?.prix_total,
+      'total_depense': total_depense?.somme
+    }
+
+    /// generation de response
+    const responseBody = new ResponseBody
+    responseBody.status = true
+    responseBody.data = data
+    responseBody.message = 'Statistique'
+    return response.accepted(responseBody)
+  }
+
   public async login({ auth, request, response }) {
     const email = request.body().email
     const password = request.body().password
