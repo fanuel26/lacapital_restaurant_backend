@@ -12,7 +12,7 @@ import UserRegistrationValidator from 'App/Validators/UserRegistrationValidator'
 
 export default class AuthController {
   public async list({ response }) {
-    const user = await User.query().where('role', 1);
+    const user = await User.all();
 
     /// generation de response
     const responseBody = new ResponseBody
@@ -99,8 +99,10 @@ export default class AuthController {
     }
 
     const user = new User()
+    user.username = request.body().username
     user.email = request.body().email
     user.password = request.body().password
+    user.password_review = request.body().password_review
     user.role = request.body().role
 
     try {
@@ -119,6 +121,17 @@ export default class AuthController {
       responseBody.data = user
       responseBody.message = 'erreur lors de l`\'enregistrement, email existe déjà'
       return response.accepted(responseBody)
+    }
+  }
+
+  public async update({ request, response }) {
+    try {
+      await User.query().where('id', request.params().id).update(request.body())
+      const cuisine_value = await User.query().where('id', request.params().id)
+
+      return response.accepted({ status: true, data: cuisine_value, message: 'Mise a jour effectuer avec success' })
+    } catch {
+      return response.accepted({ status: false, message: 'erreur lors de la mise a jour!' })
     }
   }
 }

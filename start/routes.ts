@@ -23,14 +23,15 @@ import Route from '@ioc:Adonis/Core/Route'
 Route.group(() => {
   //// authetication route
   Route.group(() => {
+    Route.post('/register', 'AuthController.register')
     Route.post('/login', 'AuthController.login')
   }).prefix('/auth')
 
 
   Route.group(() => {
     Route.get('/list', 'AuthController.list')
-    Route.post('/register', 'AuthController.register')
     Route.get('/statistique', 'AuthController.stats')
+    Route.put('/update/:id', 'AuthController.update')
   }).prefix('/auth').middleware(['auth'])
 
   /// route pour les produit
@@ -42,6 +43,15 @@ Route.group(() => {
     Route.put('/update/:id', 'ProduitsController.update')
   }).prefix('/produit').middleware(['auth'])
 
+
+  /// route pour les Menu
+  Route.group(() => {
+    Route.get('/list', 'CategorieMenusController.list')
+    Route.get('/getById/:id', 'CategorieMenusController.listById')
+    Route.post('/getByDate', 'CategorieMenusController.listByDate')
+    Route.post('/save', 'CategorieMenusController.save')
+    Route.put('/update/:id', 'CategorieMenusController.update')
+  }).prefix('/categorie').middleware(['auth'])
 
   /// route pour les Menu
   Route.group(() => {
@@ -88,4 +98,18 @@ Route.group(() => {
     Route.post('/save', 'DepensesController.save')
     Route.put('/update/:id', 'DepensesController.update')
   }).prefix('/depense').middleware(['auth'])
+
+  /// route pour les Commande
+  Route.group(() => {
+    Route.get('/list', 'CommandesController.list')
+    Route.get('/getById/:id', 'CommandesController.listById')
+    Route.get('/commandeNotification/:id', 'CommandesController.commandeNotification')
+    Route.get('/getByIdUser/:id', 'CommandesController.listByIdUser')
+    Route.post('/getByDate', 'CommandesController.listByDate')
+    Route.post('/getByDateAndUser', 'CommandesController.listByDateAndUser')
+    Route.post('/save', 'CommandesController.save')
+    Route.put('/update/:id', 'CommandesController.update')
+  }).prefix('/commande').middleware(['auth'])
 }).prefix('/api')
+
+

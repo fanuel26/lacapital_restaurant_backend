@@ -1,8 +1,8 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class MenuRegistrationValidator {
-  constructor(protected ctx: HttpContextContract) { }
+export default class CategorieMenuRegistrationValidator {
+  constructor(protected ctx: HttpContextContract) {}
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -25,8 +25,6 @@ export default class MenuRegistrationValidator {
    */
   public schema = schema.create({
     libelle: schema.string({}, [rules.required()]),
-    prix: schema.string({}, [rules.required()]),
-    id_categorie: schema.string({}, [rules.required()]),
   })
 
   /**
@@ -42,7 +40,5 @@ export default class MenuRegistrationValidator {
    */
   public messages: CustomMessages = {
     'libelle.required': 'The libelle is required',
-    'prix.required': 'The libelle is required',
-    'id_categorie.required': 'The id_categorie is required',
   }
 }

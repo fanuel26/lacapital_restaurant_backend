@@ -1,16 +1,15 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import Database from "@ioc:Adonis/Lucid/Database";
-import Menu from "App/Models/Menu";
+import CategorieMenu from "App/Models/CategorieMenu";
 import ResponseBody from "App/Models/ResponseBody";
-import MenuRegistrationValidator from "App/Validators/MenuRegistrationValidator";
+import CategorieMenuRegistrationValidator from "App/Validators/CategorieMenuRegistrationValidator";
 
-export default class MenusController {
+export default class CategorieMenusController {
   public async list({ response }) {
-    const menu = await Database.from('menus').join("categorie_menus", "categorie_menus.id", "menus.id_categorie").select("menus.*", "categorie_menus.libelle AS libelle_categorie");
+    const menu = await CategorieMenu.all();
 
     /// generation de response
-    const responseBody = new ResponseBody
+    const responseBody = new ResponseBody()
     responseBody.status = true
     responseBody.data = menu
     responseBody.message = 'Liste des menu'
@@ -19,7 +18,7 @@ export default class MenusController {
 
   public async listById({ request, response }) {
     try {
-      const menu = await Menu.findOrFail(request.params().id)
+      const menu = await CategorieMenu.findOrFail(request.params().id)
       return response.accepted({ status: true, data: menu, message: 'menu par id' })
     } catch {
       return response.accepted({ status: false, message: 'erreur! id nom trouvez' })
@@ -29,7 +28,7 @@ export default class MenusController {
   public async listByDate({ request, response }) {
     try {
       console.log(request.body());
-      const menu = await Menu.query().where('created_at', 'LIKE', `%${request.body().date}%`).join("categorie_menus", "categorie_menus.id", "menus.id_categorie").select("menus.*", "categorie_menus.libelle AS libelle_categorie");
+      const menu = await CategorieMenu.query().where('created_at', 'LIKE', `%${request.body().date}%`)
       console.log(menu);
       return response.accepted({ status: true, data: menu, message: 'menu par date' })
     } catch {
@@ -39,22 +38,19 @@ export default class MenusController {
 
 
   public async save({ request, response }) {
-    const data = await request.validate(MenuRegistrationValidator)
+    const data = await request.validate(CategorieMenuRegistrationValidator)
 
     console.log(data)
     if (data.errors && data.errors?.length != 0) {
       return data
     }
 
-    const menu = new Menu()
+    const menu = new CategorieMenu()
     menu.libelle = request.body().libelle
-    menu.id_categorie = request.body().id_categorie
-    menu.prix = request.body().prix
-    // menu.prix_vente_unique = request.body().prix_vente_unique
 
     try {
       await menu.save()
-      return response.accepted({ status: true, data: menu, message: 'menu créé avec success' })
+      return response.accepted({ status: true, data: menu, message: 'categorie menu créé avec success' })
     } catch {
       return response.accepted({ status: false, data: menu, message: 'erreur lors de l`\'enregistrement!' })
     }
@@ -62,8 +58,8 @@ export default class MenusController {
 
   public async update({ request, response }) {
     try {
-      await Menu.query().where('id', request.params().id).update(request.body())
-      const menu_value = await Menu.query().where('id', request.params().id)
+      await CategorieMenu.query().where('id', request.params().id).update(request.body())
+      const menu_value = await CategorieMenu.query().where('id', request.params().id)
 
       return response.accepted({ status: true, data: menu_value, message: 'Mise a jour effectuer avec success' })
     } catch {

@@ -37,7 +37,6 @@ export default class CuisinesController {
     }
   }
 
-
   public async save({ request, response }) {
     const data = await request.validate(CuisineRegistrationValidator)
 
